@@ -13,6 +13,7 @@ import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @Configuration
 @EnableBatchProcessing
@@ -20,10 +21,12 @@ public class BatchFileProcessor {
     private final StepBuilderFactory stepBuilderFactory;
     private final JobBuilderFactory jobBuilderFactory;
     private final ParserConfig parserConfig;
+    private final JdbcTemplate jdbcTemplate;
 
-    public BatchFileProcessor(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, ParserConfig parserConfig) {
+    public BatchFileProcessor(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, ParserConfig parserConfig, JdbcTemplate jdbcTemplate) {
         this.stepBuilderFactory = stepBuilderFactory;
         this.jobBuilderFactory = jobBuilderFactory;
+        this.jdbcTemplate = jdbcTemplate;
         this.parserConfig = parserConfig;
     }
 
@@ -43,7 +46,7 @@ public class BatchFileProcessor {
     public Job importLogEntryJob(Step step1, LogEntryRepository repository) {
         return jobBuilderFactory.get("importLogEntryJob")
                 .incrementer(new RunIdIncrementer())
-                .listener(new JobCompleteProcessor(repository, parserConfig))
+                .listener(new JobCompleteProcessor(repository, parserConfig, jdbcTemplate))
                 .flow(step1)
                 .end()
                 .build();
