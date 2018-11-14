@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/wallethub
+    username: nathan
+    password: pw123
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    hibernate:
+      ddl-auto: create
+  main:
+    allow-bean-definition-overriding: true
+logging:
+  level:
+    root: info
