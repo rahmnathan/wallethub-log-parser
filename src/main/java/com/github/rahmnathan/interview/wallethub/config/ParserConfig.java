@@ -13,6 +13,15 @@ public class ParserConfig {
     private Duration duration;
     private LocalDateTime startDate;
     private File accesslog;
+    private Integer chunkSize = 25000;
+
+    public Integer getChunkSize() {
+        return chunkSize;
+    }
+
+    public void setChunkSize(Integer chunkSize) {
+        this.chunkSize = chunkSize;
+    }
 
     public Long getThreshold() {
         return threshold;
@@ -50,13 +59,14 @@ public class ParserConfig {
     public String toString() {
         return "ParserConfig{" +
                 "threshold=" + threshold +
-                ", duration='" + duration + '\'' +
+                ", duration=" + duration +
                 ", startDate=" + startDate +
                 ", accesslog=" + accesslog +
+                ", chunkSize=" + chunkSize +
                 '}';
     }
 
-    public static enum Duration {
+    public enum Duration {
         DAILY(24),
         HOURLY(1);
 
