@@ -57,13 +57,4 @@ public class BatchFileProcessor {
                 .writer(logEntryWriter)
                 .build();
     }
-
-    @Bean
-    public Step step2(LogEntryWriter logEntryWriter, FlatFileItemReader<LogEntry> reader) {
-        return stepBuilderFactory.get("step2")
-                .<LogEntry, LogEntry> chunk(parserConfig.getChunkSize())
-                .reader(reader)
-                .writer(logEntryWriter)
-                .build();
-    }
 }
