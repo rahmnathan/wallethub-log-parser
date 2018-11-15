@@ -15,6 +15,12 @@ FROM   log_entry
 INNER JOIN above_threshold
 ON log_entry.id = above_threshold.log_entry_id;
 
+/* Query count for each ip in above threshold table */
+SELECT log_entry.ip,count(*)
+FROM log_entry
+INNER JOIN above_threshold
+ON log_entry.id = above_threshold.log_entry_id
+group by log_entry.ip;
 
 /* Query log entry table for specific ip */
 SELECT *
