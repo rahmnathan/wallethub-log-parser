@@ -38,7 +38,7 @@ public class BatchFileProcessor {
                 .delimited()
                 .delimiter("|")
                 .names(new String[]{"date", "ip", "request", "status", "userAgent"})
-                .fieldSetMapper(new LogEntryFieldSetMapper())
+                .fieldSetMapper(new LogEntryMapper())
                 .build();
     }
 

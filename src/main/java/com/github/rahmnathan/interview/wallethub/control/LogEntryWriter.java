@@ -11,6 +11,7 @@ import java.util.List;
 
 @Component
 public class LogEntryWriter implements ItemWriter<LogEntry> {
+    private static final String INSERT_LOG_ENTRY_QUERY = "insert into log_entry (date, ip, request, status, user_agent) values (?, ?, ?, ?, ?)";
     private final Logger logger = LoggerFactory.getLogger(LogEntryWriter.class);
     private final JdbcTemplate jdbcTemplate;
 
@@ -23,7 +24,7 @@ public class LogEntryWriter implements ItemWriter<LogEntry> {
         logger.info("Persisting log entries of size: {}", list.size());
 
         jdbcTemplate.batchUpdate(
-                "insert into log_entry (date, ip, request, status, user_agent) values (?, ?, ?, ?, ?)",
+                INSERT_LOG_ENTRY_QUERY,
                 list,
                 list.size(),
                 (ps, logEntry) -> {

@@ -8,10 +8,10 @@ import java.beans.PropertyEditorSupport;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class LogEntryFieldSetMapper extends BeanWrapperFieldSetMapper<LogEntry> {
+public class LogEntryMapper extends BeanWrapperFieldSetMapper<LogEntry> {
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
-    public LogEntryFieldSetMapper(){
+    public LogEntryMapper(){
         setTargetType(LogEntry.class);
     }
 
