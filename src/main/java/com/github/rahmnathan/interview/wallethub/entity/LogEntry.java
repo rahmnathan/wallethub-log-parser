@@ -1,17 +1,10 @@
 package com.github.rahmnathan.interview.wallethub.entity;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "log_entry")
 public class LogEntry {
 
-    @Id
-    @SequenceGenerator(name = "log_entry_seq", sequenceName = "log_entry_seq")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "log_entry_seq")
     private Long id;
-
     private LocalDateTime date;
     private String ip;
     private String request;
@@ -83,6 +76,11 @@ public class LogEntry {
 
         public static Builder newInstance(){
             return new Builder();
+        }
+
+        public Builder setId(Long id){
+            logEntry.id = id;
+            return this;
         }
 
         public Builder setDate(LocalDateTime date){

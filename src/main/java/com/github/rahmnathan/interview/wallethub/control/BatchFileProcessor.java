@@ -43,10 +43,10 @@ public class BatchFileProcessor {
     }
 
     @Bean
-    public Job importLogEntryJob(Step step1, LogEntryRepository repository) {
+    public Job importLogEntryJob(Step step1) {
         return jobBuilderFactory.get("importLogEntryJob")
                 .incrementer(new RunIdIncrementer())
-                .listener(new JobCompleteProcessor(repository, parserConfig, jdbcTemplate))
+                .listener(new JobCompleteProcessor(parserConfig, jdbcTemplate))
                 .flow(step1)
                 .end()
                 .build();

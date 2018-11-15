@@ -8,26 +8,28 @@ import org.springframework.batch.core.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public class JobCompleteProcessor implements JobExecutionListener {
+    private static final String ABOVE_THRESHOLD_QUERY = "select * from log_entry logEntry where logEntry.ip in " +
+            "(select logEntry2.ip from log_entry logEntry2 where logEntry2.date between ? and ? group by logEntry2.ip having count(*) > ?) " +
+            "and logEntry.date between ? and ?";
+
+    private static final String INSERT_ABOVE_THRESHOLD_QUERY = "insert into above_threshold (log_entry_id) values (?)";
     private final Logger logger = LoggerFactory.getLogger(JobCompleteProcessor.class);
-    private final LogEntryRepository repository;
     private final ParserConfig parserConfig;
     private final JdbcTemplate jdbcTemplate;
 
-    public JobCompleteProcessor(LogEntryRepository repository, ParserConfig parserConfig, JdbcTemplate jdbcTemplate) {
+    public JobCompleteProcessor(ParserConfig parserConfig, JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.parserConfig = parserConfig;
-        this.repository = repository;
 
         logger.info("ParserConfig: {}", parserConfig);
     }
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
-        logger.info("Strarting job.");
+        logger.info("Starting job.");
     }
 
     @Override
@@ -37,27 +39,23 @@ public class JobCompleteProcessor implements JobExecutionListener {
         LocalDateTime startDate = parserConfig.getStartDate();
         LocalDateTime endDate = startDate.plusHours(parserConfig.getDuration().getHours());
 
-        Iterable<LogEntry> logEntryIterable = repository.findBetweenDatesAndAboveThreshold(startDate, endDate, parserConfig.getThreshold());
-
-        logEntryIterable.forEach(logEntry -> logger.info("LOGENTRY: {}", logEntry));
-
-        List<LogEntry> result = new ArrayList<>();
-        logEntryIterable.iterator().forEachRemaining(logEntry -> {
-            logger.info("Log entry above threshold: {}", logEntry);
-            result.add(logEntry);
-        });
+        Collection<LogEntry> logEntries = jdbcTemplate.query(ABOVE_THRESHOLD_QUERY,
+                new Object[]{startDate, endDate, parserConfig.getThreshold(), startDate, endDate},
+                (resultSet, i) -> LogEntry.Builder.newInstance()
+                            .setId(resultSet.getLong(1))
+                            .setDate(resultSet.getTimestamp(2).toLocalDateTime())
+                            .setIp(resultSet.getString(3))
+                            .setRequest(resultSet.getString(4))
+                            .setStatus(resultSet.getString(5))
+                            .setUserAgent(resultSet.getString(6))
+                            .build());
 
         jdbcTemplate.batchUpdate(
-                "insert into above_threshold (id, date, ip, request, status, user_agent) values (?, ?, ?, ?, ?, ?)",
-                result,
+                INSERT_ABOVE_THRESHOLD_QUERY,
+                logEntries,
                 parserConfig.getChunkSize(),
                 (ps, logEntry) -> {
-                    ps.setLong(1, logEntry.getId());
-                    ps.setObject(2, logEntry.getDate());
-                    ps.setString(3, logEntry.getIp());
-                    ps.setString(4, logEntry.getRequest());
-                    ps.setString(5, logEntry.getStatus());
-                    ps.setString(6, logEntry.getUserAgent());
+                    ps.setObject(1, logEntry.getId());
                 });
     }
 }
