@@ -1,9 +1,9 @@
-package com.github.rahmnathan.interview.wallethub.control;
+package com.github.rahmnathan.wallethub.log.parser.control;
 
-import com.github.rahmnathan.interview.wallethub.config.ParserConfig;
-import com.github.rahmnathan.interview.wallethub.entity.LogEntry;
-import com.github.rahmnathan.interview.wallethub.entity.LogEntryAboveThreshold;
-import com.github.rahmnathan.interview.wallethub.repository.AboveThresholdRepository;
+import com.github.rahmnathan.wallethub.log.parser.config.ParserConfig;
+import com.github.rahmnathan.wallethub.log.parser.entity.LogEntry;
+import com.github.rahmnathan.wallethub.log.parser.entity.LogEntryAboveThreshold;
+import com.github.rahmnathan.wallethub.log.parser.repository.AboveThresholdRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;

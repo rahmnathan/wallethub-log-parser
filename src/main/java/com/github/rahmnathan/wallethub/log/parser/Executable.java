@@ -1,4 +1,4 @@
-package com.github.rahmnathan.interview.wallethub;
+package com.github.rahmnathan.wallethub.log.parser;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

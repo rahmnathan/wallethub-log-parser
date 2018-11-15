@@ -1,7 +1,7 @@
-package com.github.rahmnathan.interview.wallethub;
+package com.github.rahmnathan.wallethub.log.parser;
 
-import com.github.rahmnathan.interview.wallethub.repository.AboveThresholdRepository;
-import com.github.rahmnathan.interview.wallethub.repository.LogEntryRepository;
+import com.github.rahmnathan.wallethub.log.parser.repository.AboveThresholdRepository;
+import com.github.rahmnathan.wallethub.log.parser.repository.LogEntryRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.batch.core.Job;

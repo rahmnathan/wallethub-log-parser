@@ -1,6 +1,6 @@
-package com.github.rahmnathan.interview.wallethub.repository;
+package com.github.rahmnathan.wallethub.log.parser.repository;
 
-import com.github.rahmnathan.interview.wallethub.entity.LogEntry;
+import com.github.rahmnathan.wallethub.log.parser.entity.LogEntry;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

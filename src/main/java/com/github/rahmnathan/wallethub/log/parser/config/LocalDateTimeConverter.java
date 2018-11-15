@@ -1,4 +1,4 @@
-package com.github.rahmnathan.interview.wallethub.config;
+package com.github.rahmnathan.wallethub.log.parser.config;
 
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.core.convert.converter.Converter;
