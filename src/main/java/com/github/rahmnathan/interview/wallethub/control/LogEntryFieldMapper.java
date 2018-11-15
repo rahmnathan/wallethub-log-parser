@@ -8,10 +8,10 @@ import java.beans.PropertyEditorSupport;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class LogEntryMapper extends BeanWrapperFieldSetMapper<LogEntry> {
+public class LogEntryFieldMapper extends BeanWrapperFieldSetMapper<LogEntry> {
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
-    public LogEntryMapper(){
+    public LogEntryFieldMapper(){
         setTargetType(LogEntry.class);
     }
 
@@ -22,7 +22,7 @@ public class LogEntryMapper extends BeanWrapperFieldSetMapper<LogEntry> {
             @Override
             public void setAsText(String text) throws IllegalArgumentException {
                 if (text != null) {
-                    setValue(java.time.LocalDateTime.parse(text, formatter));
+                    setValue(LocalDateTime.parse(text, formatter));
                 } else {
                     setValue(null);
                 }
@@ -32,7 +32,7 @@ public class LogEntryMapper extends BeanWrapperFieldSetMapper<LogEntry> {
             public String getAsText() throws IllegalArgumentException {
                 Object date = getValue();
                 if (date != null) {
-                    return formatter.format((java.time.LocalDateTime) getValue());
+                    return formatter.format((LocalDateTime) getValue());
                 } else {
                     return "";
                 }

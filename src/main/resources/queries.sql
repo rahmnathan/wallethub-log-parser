@@ -1,11 +1,26 @@
 /* Query log entry table for entries above threshold */
-select * from log_entry logEntry where logEntry.ip in (select logEntry2.ip from log_entry logEntry2 where logEntry2.date between ? and ? group by logEntry2.ip having count(*) > ?) and logEntry.date between ? and ?;
+SELECT *
+FROM   log_entry logEntry
+WHERE  logEntry.ip IN (SELECT logEntry2.ip
+                       FROM   log_entry logEntry2
+                       WHERE  logEntry2.date BETWEEN ? AND ?
+                       GROUP  BY logEntry2.ip
+                       HAVING Count(*) > ?)
+AND logEntry.date BETWEEN ? AND ?;
+
 
 /* Query above threshold table */
-select * from log_entry inner join above_threshold on log_entry.id = above_threshold.log_entry_id;
+SELECT *
+FROM   log_entry
+INNER JOIN above_threshold
+ON log_entry.id = above_threshold.log_entry_id;
+
 
 /* Query log entry table for specific ip */
-select * from log_entry logEntry where logEntry.ip = ?;
+SELECT *
+FROM   log_entry logEntry
+WHERE  logEntry.ip = ?;
 
 /* Initial insert */
-insert into log_entry (date, ip, request, status, user_agent) values (?, ?, ?, ?, ?);
+INSERT INTO log_entry (date, ip, request, status, user_agent)
+VALUES (?, ?, ?, ?, ?);

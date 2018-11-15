@@ -16,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-public class LogFileProcessorTest {
+public class LogEntryJobBuilderTest {
     private final AboveThresholdRepository aboveThresholdRepository;
     private final LogEntryRepository logEntryRepository;
 
     @Autowired
-    public LogFileProcessorTest(AboveThresholdRepository aboveThresholdRepository, LogEntryRepository logEntryRepository,
-                                JobLauncher jobLauncher, @Qualifier("loadLogEntriesJob") Job job) throws Exception {
+    public LogEntryJobBuilderTest(AboveThresholdRepository aboveThresholdRepository, LogEntryRepository logEntryRepository,
+                                  JobLauncher jobLauncher, @Qualifier("loadLogEntriesJob") Job job) throws Exception {
         this.aboveThresholdRepository = aboveThresholdRepository;
         this.logEntryRepository = logEntryRepository;
 

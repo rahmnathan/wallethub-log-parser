@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class JobCompleteProcessor implements JobExecutionListener {
     private static final String ABOVE_THRESHOLD_QUERY =
             "select * from log_entry logEntry where logEntry.ip in " +
