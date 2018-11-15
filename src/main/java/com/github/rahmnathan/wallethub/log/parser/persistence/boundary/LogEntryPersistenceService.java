@@ -1,9 +1,9 @@
-package com.github.rahmnathan.wallethub.log.parser.control;
+package com.github.rahmnathan.wallethub.log.parser.persistence.boundary;
 
-import com.github.rahmnathan.wallethub.log.parser.entity.LogEntry;
-import com.github.rahmnathan.wallethub.log.parser.entity.LogEntryAboveThreshold;
-import com.github.rahmnathan.wallethub.log.parser.repository.AboveThresholdRepository;
-import com.github.rahmnathan.wallethub.log.parser.repository.LogEntryRepository;
+import com.github.rahmnathan.wallethub.log.parser.persistence.entity.LogEntry;
+import com.github.rahmnathan.wallethub.log.parser.persistence.entity.LogEntryAboveThreshold;
+import com.github.rahmnathan.wallethub.log.parser.persistence.repository.AboveThresholdRepository;
+import com.github.rahmnathan.wallethub.log.parser.persistence.repository.LogEntryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -38,7 +38,7 @@ public class LogEntryPersistenceService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    Collection<LogEntry> queryForLogEntriesAboveThreshold(LocalDateTime startDate, LocalDateTime endDate, Long threshold) {
+    public Collection<LogEntry> queryForLogEntriesAboveThreshold(LocalDateTime startDate, LocalDateTime endDate, Long threshold) {
         return jdbcTemplate.query(ABOVE_THRESHOLD_QUERY,
                 new Object[]{startDate, endDate, threshold, startDate, endDate},
                 (resultSet, i) -> LogEntry.Builder.newInstance()
@@ -51,7 +51,7 @@ public class LogEntryPersistenceService {
                         .build());
     }
 
-    void insertAboveThresholdEntries(Collection<LogEntry> logEntries){
+    public void insertAboveThresholdEntries(Collection<LogEntry> logEntries){
         List<LogEntryAboveThreshold> logEntryAboveThresholdList = logEntries.stream()
                 .map(logEntry -> new LogEntryAboveThreshold(logEntry, COMMENT))
                 .collect(Collectors.toList());
@@ -59,7 +59,7 @@ public class LogEntryPersistenceService {
         aboveThresholdRepository.saveAll(logEntryAboveThresholdList);
     }
 
-    void insertLogEntries(List<? extends LogEntry> logEntries){
+    public void insertLogEntries(List<? extends LogEntry> logEntries){
         logger.info("Persisting log entry collection of size: {}", logEntries.size());
         logEntryRepository.saveAll(logEntries);
     }

@@ -1,7 +1,8 @@
 package com.github.rahmnathan.wallethub.log.parser.control;
 
 import com.github.rahmnathan.wallethub.log.parser.config.ParserConfig;
-import com.github.rahmnathan.wallethub.log.parser.entity.LogEntry;
+import com.github.rahmnathan.wallethub.log.parser.persistence.boundary.LogEntryPersistenceService;
+import com.github.rahmnathan.wallethub.log.parser.persistence.entity.LogEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;

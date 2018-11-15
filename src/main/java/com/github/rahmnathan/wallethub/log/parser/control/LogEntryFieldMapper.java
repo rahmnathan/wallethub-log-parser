@@ -1,6 +1,6 @@
 package com.github.rahmnathan.wallethub.log.parser.control;
 
-import com.github.rahmnathan.wallethub.log.parser.entity.LogEntry;
+import com.github.rahmnathan.wallethub.log.parser.persistence.entity.LogEntry;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.validation.DataBinder;
 

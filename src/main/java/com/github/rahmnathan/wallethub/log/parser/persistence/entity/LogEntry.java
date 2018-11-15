@@ -1,4 +1,4 @@
-package com.github.rahmnathan.wallethub.log.parser.entity;
+package com.github.rahmnathan.wallethub.log.parser.persistence.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
