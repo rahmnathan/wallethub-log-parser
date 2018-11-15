@@ -19,6 +19,6 @@ There are two example application.yml files. One in the src/main/resources/ and 
 
 <h2>Usage</h2>
 
-java -jar wallethub-log-parser-1.0.jar --startDate=2017-01-01.15:00:00 --duration=hourly --threshold=200 --accesslog=src/main/resources/access.log
+java -jar target/wallethub-log-parser-1.0.jar --startDate=2017-01-01.15:00:00 --duration=hourly --threshold=200 --accesslog=src/main/resources/access.log
 
-java -jar wallethub-log-parser-1.0.jar --startDate=2017-01-01.00:00:00 --duration=daily --threshold=500 --accesslog=src/main/resources/access.log
+java -jar target/wallethub-log-parser-1.0.jar --startDate=2017-01-01.00:00:00 --duration=daily --threshold=500 --accesslog=src/main/resources/access.log
