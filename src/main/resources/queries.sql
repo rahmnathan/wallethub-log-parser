@@ -4,5 +4,8 @@ select * from log_entry logEntry where logEntry.ip in (select logEntry2.ip from 
 /* Query above threshold table */
 select * from log_entry inner join above_threshold on log_entry.id = above_threshold.log_entry_id;
 
+/* Query log entry table for specific ip */
+select * from log_entry logEntry where logEntry.ip = ?;
+
 /* Initial insert */
 insert into log_entry (date, ip, request, status, user_agent) values (?, ?, ?, ?, ?);
