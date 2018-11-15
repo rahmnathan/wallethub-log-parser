@@ -41,7 +41,7 @@ public class JobCompleteProcessor implements JobExecutionListener {
     @Override
     @Transactional
     public void afterJob(JobExecution jobExecution) {
-        logger.info("Job is completed. Querying for entries above threshold.");
+        logger.info("Job is complete. Querying for entries above threshold.");
 
         Collection<LogEntry> logEntries = queryForLogEntriesAboveThreshold();
 

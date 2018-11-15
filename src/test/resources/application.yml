@@ -1,0 +1,24 @@
+spring:
+  batch:
+    job:
+      enabled: false
+    initialize-schema: always
+  datasource:
+    url: jdbc:hsqldb:mem:testdb
+    username: sa
+    password: sa
+  jpa:
+    database-platform: org.hibernate.dialect.HSQLDialect
+    hibernate:
+      ddl-auto: none
+  main:
+    allow-bean-definition-overriding: true
+logging:
+  level:
+    root: info
+
+chunkSize: 50
+threshold: 2
+duration: hourly
+startDate: 2017-01-01.00:00:00
+accesslog: src/test/resources/access-test.log

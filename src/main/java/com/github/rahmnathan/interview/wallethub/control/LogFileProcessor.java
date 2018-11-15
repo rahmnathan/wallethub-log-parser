@@ -18,16 +18,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 @Configuration
 @EnableBatchProcessing
-public class BatchFileProcessor {
+public class LogFileProcessor {
     private final AboveThresholdRepository aboveThresholdRepository;
     private final StepBuilderFactory stepBuilderFactory;
     private final JobBuilderFactory jobBuilderFactory;
     private final ParserConfig parserConfig;
     private final JdbcTemplate jdbcTemplate;
 
-    public BatchFileProcessor(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory,
-                              ParserConfig parserConfig, JdbcTemplate jdbcTemplate,
-                              AboveThresholdRepository aboveThresholdRepository) {
+    public LogFileProcessor(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory,
+                            ParserConfig parserConfig, JdbcTemplate jdbcTemplate, AboveThresholdRepository aboveThresholdRepository) {
         this.aboveThresholdRepository = aboveThresholdRepository;
         this.stepBuilderFactory = stepBuilderFactory;
         this.jobBuilderFactory = jobBuilderFactory;
@@ -36,20 +35,8 @@ public class BatchFileProcessor {
     }
 
     @Bean
-    public FlatFileItemReader<LogEntry> reader() {
-        return new FlatFileItemReaderBuilder<LogEntry>()
-                .name("logEntryReader")
-                .resource(new FileSystemResource(parserConfig.getAccesslog().toPath()))
-                .delimited()
-                .delimiter("|")
-                .names(new String[]{"date", "ip", "request", "status", "userAgent"})
-                .fieldSetMapper(new LogEntryMapper())
-                .build();
-    }
-
-    @Bean
-    public Job importLogEntryJob(Step step1) {
-        return jobBuilderFactory.get("importLogEntryJob")
+    public Job loadLogEntriesJob(Step step1) {
+        return jobBuilderFactory.get("loadLogEntriesJob")
                 .incrementer(new RunIdIncrementer())
                 .listener(new JobCompleteProcessor(parserConfig, jdbcTemplate, aboveThresholdRepository))
                 .flow(step1)
@@ -58,11 +45,23 @@ public class BatchFileProcessor {
     }
 
     @Bean
-    public Step step1(LogEntryWriter logEntryWriter, FlatFileItemReader<LogEntry> reader) {
+    public Step step1(LogEntryWriter logEntryWriter, FlatFileItemReader<LogEntry> logEntryReader) {
         return stepBuilderFactory.get("step1")
                 .<LogEntry, LogEntry> chunk(parserConfig.getChunkSize())
-                .reader(reader)
+                .reader(logEntryReader)
                 .writer(logEntryWriter)
+                .build();
+    }
+
+    @Bean
+    public FlatFileItemReader<LogEntry> logEntryReader() {
+        return new FlatFileItemReaderBuilder<LogEntry>()
+                .name("logEntryReader")
+                .resource(new FileSystemResource(parserConfig.getAccesslog().toPath()))
+                .delimited()
+                .delimiter("|")
+                .names(new String[]{"date", "ip", "request", "status", "userAgent"})
+                .fieldSetMapper(new LogEntryMapper())
                 .build();
     }
 }
