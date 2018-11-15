@@ -2,36 +2,23 @@ package com.github.rahmnathan.wallethub.log.parser.control;
 
 import com.github.rahmnathan.wallethub.log.parser.config.ParserConfig;
 import com.github.rahmnathan.wallethub.log.parser.entity.LogEntry;
-import com.github.rahmnathan.wallethub.log.parser.entity.LogEntryAboveThreshold;
-import com.github.rahmnathan.wallethub.log.parser.repository.AboveThresholdRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class JobCompleteProcessor implements JobExecutionListener {
-    private static final String ABOVE_THRESHOLD_QUERY =
-            "select * from log_entry logEntry where logEntry.ip in " +
-            "(select logEntry2.ip from log_entry logEntry2 where logEntry2.date between ? and ? group by logEntry2.ip having count(*) > ?) " +
-            "and logEntry.date between ? and ?";
-
-    private static final String COMMENT = "Entry above threshold.";
     private final Logger logger = LoggerFactory.getLogger(JobCompleteProcessor.class);
-    private final AboveThresholdRepository aboveThresholdRepository;
+    private final LogEntryPersistenceService logEntryPersistenceService;
     private final ParserConfig parserConfig;
-    private final JdbcTemplate jdbcTemplate;
 
-    public JobCompleteProcessor(ParserConfig parserConfig, JdbcTemplate jdbcTemplate, AboveThresholdRepository aboveThresholdRepository) {
-        this.aboveThresholdRepository = aboveThresholdRepository;
-        this.jdbcTemplate = jdbcTemplate;
+    public JobCompleteProcessor(ParserConfig parserConfig, LogEntryPersistenceService logEntryPersistenceService) {
+        this.logEntryPersistenceService = logEntryPersistenceService;
         this.parserConfig = parserConfig;
     }
 
@@ -49,30 +36,13 @@ public class JobCompleteProcessor implements JobExecutionListener {
 
         logEntries.forEach(logEntry -> logger.info("Log entry above threshold: {}", logEntry));
 
-        insertAboveThresholdEntries(logEntries);
+        logEntryPersistenceService.insertAboveThresholdEntries(logEntries);
     }
 
     private Collection<LogEntry> queryForLogEntriesAboveThreshold() {
         LocalDateTime startDate = parserConfig.getStartDate();
         LocalDateTime endDate = startDate.plusHours(parserConfig.getDuration().getHours());
 
-        return jdbcTemplate.query(ABOVE_THRESHOLD_QUERY,
-                new Object[]{startDate, endDate, parserConfig.getThreshold(), startDate, endDate},
-                (resultSet, i) -> LogEntry.Builder.newInstance()
-                        .setId(resultSet.getLong(1))
-                        .setDate(resultSet.getTimestamp(2).toLocalDateTime())
-                        .setIp(resultSet.getString(3))
-                        .setRequest(resultSet.getString(4))
-                        .setStatus(resultSet.getString(5))
-                        .setUserAgent(resultSet.getString(6))
-                        .build());
-    }
-
-    private void insertAboveThresholdEntries(Collection<LogEntry> logEntries){
-        List<LogEntryAboveThreshold> logEntryAboveThresholdList = logEntries.stream()
-                .map(logEntry -> new LogEntryAboveThreshold(logEntry, COMMENT))
-                .collect(Collectors.toList());
-
-        aboveThresholdRepository.saveAll(logEntryAboveThresholdList);
+        return logEntryPersistenceService.queryForLogEntriesAboveThreshold(startDate, endDate, parserConfig.getThreshold());
     }
 }

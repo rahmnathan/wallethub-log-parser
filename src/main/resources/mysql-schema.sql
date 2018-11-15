@@ -13,6 +13,6 @@ CREATE TABLE above_threshold
   (
      id           BIGINT NOT NULL auto_increment PRIMARY KEY,
      log_entry_id BIGINT NOT NULL,
-          FOREIGN KEY (log_entry_id) REFERENCES log_entry(id),
+     FOREIGN KEY (log_entry_id) REFERENCES log_entry(id),
      comment      VARCHAR(255)
   );
